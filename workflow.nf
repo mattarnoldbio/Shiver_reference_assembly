@@ -1,11 +1,11 @@
 include { sayHello }                                                        from './modules.nf'
-include { runDeNovoAssembly }                                               from './deNovo.nf'
-include { buildShiverConfig; runShiverContigsAlign; runShiverReadsAlign  }  from './shiver.nf'
+include { runDeNovoAssembly }                                               from './modules/deNovo/deNovo.nf'
+include { buildShiverConfig; runShiverContigsAlign; runShiverReadsAlign  }  from './modules/shiver/shiver.nf'
+include { editFASTQheaders }                                                from './modules/editFASTQ/editFASTQ.nf'
 
 workflow {
 
     main:
-    // print list of samples from sample sheet
     sample_ch = channel.fromPath(params.samplesheet)
                        .splitCsv(header: true)
                        .map { row ->
@@ -17,7 +17,12 @@ workflow {
 
     runDeNovoAssembly(sample_ch)
 
+    // TODO: check the most "nextflow" way of managing the inputs. I think it should maybe just be a continuation of the sample_ch?
     runShiverContigsAlign(runDeNovoAssembly.out.contigs, file(params.shiver_init_dir))
+
+    editFASTQheaders(sample_ch)
+
+    sample_ch.view()
 
     publish:
     contigs = runDeNovoAssembly.out.contigs
