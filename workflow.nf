@@ -6,6 +6,13 @@ include { editFASTQheaders }                                                from
 workflow {
 
     main:
+
+    buildShiverConfig(
+        file(params.shiver_config),
+        file(params.ref_alignment),
+        file(params.adapters)
+        ) 
+
     sample_ch = channel.fromPath(params.samplesheet)
                        .splitCsv(header: true)
                        .map { row ->
@@ -13,28 +20,43 @@ workflow {
                            def r2 = file("${params.data_dir}/${row.sample}/${row.sample}_R2.fastq")
                            tuple(row.sample, r1, r2)
                        }
-                       .view()
+                       // .view()
 
     runDeNovoAssembly(sample_ch)
 
-    // TODO: check the most "nextflow" way of managing the inputs. I think it should maybe just be a continuation of the sample_ch?
-    runShiverContigsAlign(runDeNovoAssembly.out.contigs, file(params.shiver_init_dir))
+    runShiverContigsAlign(
+        runDeNovoAssembly.out.contigs, 
+        buildShiverConfig.out.shiver_init_dir
+        )
 
     editFASTQheaders(sample_ch)
 
-    sample_ch.view()
+    reads_and_contigs = editFASTQheaders.out.amended_reads
+                        .join(runDeNovoAssembly.out.contigs)
+                        .join(runShiverContigsAlign.out.shiver_contig_alignment)
+                        // .view()
+
+    runShiverReadsAlign(
+        reads_and_contigs, 
+        buildShiverConfig.out.shiver_init_dir
+        )
+
 
     publish:
     contigs = runDeNovoAssembly.out.contigs
     shiver_contig_alignment = runShiverContigsAlign.out.shiver_contig_alignment
+    shiver_final_output = runShiverReadsAlign.out.shiver_reads_alignment
 
 }
 
 output {
     contigs {
-        path './contigs'
+        path { sample -> "./contigs/${sample[0]}" }
     }
     shiver_contig_alignment {
-        path './shiver'
+        path { sample -> "./shiver/contig_alignments/${sample[0]}" }
+    }
+    shiver_final_output {
+        path { sample -> "./shiver/final_output/${sample[0]}" }
     }
 }
