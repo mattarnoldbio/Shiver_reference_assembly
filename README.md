@@ -23,6 +23,7 @@ Each of these inputs ***must*** be specified which can be done from the commmand
 - Reference alignment to use for aligning contigs and raw reads to (`ref_alignment`)
   - See [`examples/PRRSV_ref_genomes.fasta`](https://github.com/mattarnoldbio/Shiver_reference_assembly/blob/main/examples/PRRSV_ref_genomes.fasta) for an example.
   - This alignment should prioritise alignment quality and capturing the total diversity in the background data. Consult the [Shiver docs](https://github.com/ChrisHIV/shiver/blob/master/docs/ShiverManual.pdf) for more detail.
+- Exhaustive paramters for Shiver (with explanations) are found in the `shiver_config.sh` file. You should look through this briefly before running to check these are actually set to values that make sense for your data. If you want to create a different version, save it with a different name to avoid it being overwritten if you update your local compy of the pipeline, and edit the `shiver_config` argument in `nextflow.config`.
 
 ### Running:
 After filling out the `nextflow.config` as described, we recommend running the first half of the pipeline using `nextflow run workflow.nf --stop_after_contig_alignment true` and then checking the alignments to see if the trimmed or raw alignment is better (for more detail on this, see the final section of the [Shiver docs](https://github.com/ChrisHIV/shiver/blob/master/docs/ShiverManual.pdf)).
@@ -30,3 +31,6 @@ After filling out the `nextflow.config` as described, we recommend running the f
 Once this is done, and you have decided which aligment to use downstream, you can run the second half of the pipeline. 
 - If you decide to use the trimmed alignment (default behaviour - for us this usually looks better): `nextflow run workflow.nf -resume`. If you know you want to do this before you start, you can just run the pipeline start to finish skipping this whole palaver.
 - If you decide the raw alignment looks better: `nextflow run workflow.nf -resume --use_raw_refs true`
+
+### Updating:
+Use `git pull` to update your local copy of the repository.
