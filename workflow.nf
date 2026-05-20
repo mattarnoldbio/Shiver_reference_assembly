@@ -37,28 +37,29 @@ workflow {
                            tuple(row.sample, r1, r2)
                        }
 
-    if (params.stop_after_contig_alignment) {
+    if (!params.stop_after_contig_alignment) {
+        editFASTQheaders(raw_sample_ch)
+
+        reads_and_contigs = editFASTQheaders.out.amended_reads
+                            .join(runDeNovoAssembly.out.contigs)
+                            .join(runShiverContigsAlign.out.shiver_contig_alignment)
+                            // .view()
+
+        runShiverReadsAlign(
+            reads_and_contigs, 
+            buildShiverConfig.out.shiver_init_dir
+            )
+    }else{
         log.info "Stopping after contig alignments - check results/shiver/contig_alignments"
-        return
     }
-
-    editFASTQheaders(raw_sample_ch)
-
-    reads_and_contigs = editFASTQheaders.out.amended_reads
-                        .join(runDeNovoAssembly.out.contigs)
-                        .join(runShiverContigsAlign.out.shiver_contig_alignment)
-                        // .view()
-
-    runShiverReadsAlign(
-        reads_and_contigs, 
-        buildShiverConfig.out.shiver_init_dir
-        )
 
 
     publish:
-    contigs = runDeNovoAssembly.out.contigs
+    contigs                 = runDeNovoAssembly.out.contigs
     shiver_contig_alignment = runShiverContigsAlign.out.shiver_contig_alignment
-    shiver_final_output = runShiverReadsAlign.out.shiver_reads_alignment
+    shiver_final_output     = params.stop_after_contig_alignment 
+                                ? channel.empty() 
+                                : runShiverReadsAlign.out.shiver_reads_alignment
 
 }
 
