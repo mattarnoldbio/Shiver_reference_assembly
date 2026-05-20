@@ -27,5 +27,5 @@ Each of these inputs ***must*** be specified which can be done from the commmand
 After filling out the `nextflow.config` as described, we recommend running the first half of the pipeline using `nextflow run workflow.nf --stop_after_contig_alignment true` and then checking the alignments to see if the trimmed or raw alignment is better (for more detail on this, see the final section of the [Shiver docs](https://github.com/ChrisHIV/shiver/blob/master/docs/ShiverManual.pdf)).
 
 Once this is done, and you have decided which aligment to use downstream, you can run the second half of the pipeline. 
-- If you decide to use the trimmed alignment (default behaviour - for this usually looks better): `nextflow run workflow.nf -resume`. If you know you want to do this before you start, you can just run the pipeline start to finish skipping this whole palaver.
+- If you decide to use the trimmed alignment (default behaviour - for us this usually looks better): `nextflow run workflow.nf -resume`. If you know you want to do this before you start, you can just run the pipeline start to finish skipping this whole palaver.
 - If you decide the raw alignment looks better: `nextflow run workflow.nf -resume --use_raw_refs true`
