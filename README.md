@@ -15,6 +15,7 @@ Each of these inputs ***must*** be specified which can be done from the commmand
 
 - Data directory (`data_dir`):
   - Directory containing the sequencing data to be processed. This should contain one subdirectory per sample, containing paired-end read files named as follows. For sample `x`, raw reads (i.e. straight off the sequencer) should be named `x_raw_R1.fastq` and `x_raw_R1.fastq`; preprocessed reads (assuming you have done some kind of QC, adapter trimming etc - we use [Mark Stenglein's nextflow pipeline](https://github.com/stenglein-lab/read_preprocessing) for this) named `x_R1.fastq` and `x_R2.fastq`. Shiver might work fine with these preprocessed reads, but this requires verification.
+  - Tip: if you find your reads are not named this way, the [`rename`](https://man7.org/linux/man-pages/man1/rename.1.html) command may prove useful.
 - Sample sheet (`samplesheet`):
   - CSV file with one column called `sample` and containing the sample names. These should be the same as the name of the subdirectories in `data_dir` and the filestring that is the root of read files (see above).
 - Adapter sequences used for sequencing (`adapters`):
