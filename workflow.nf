@@ -13,7 +13,7 @@ workflow {
         file(params.adapters)
         ) 
 
-    sample_ch = channel.fromPath(params.samplesheet)
+    preprocessed_sample_ch = channel.fromPath(params.samplesheet)
                        .splitCsv(header: true)
                        .map { row ->
                            def r1 = file("${params.data_dir}/${row.sample}/${row.sample}_R1.fastq")
@@ -22,14 +22,22 @@ workflow {
                        }
                        // .view()
 
-    runDeNovoAssembly(sample_ch)
+    runDeNovoAssembly(preprocessed_sample_ch)
 
     runShiverContigsAlign(
         runDeNovoAssembly.out.contigs, 
         buildShiverConfig.out.shiver_init_dir
         )
 
-    editFASTQheaders(sample_ch)
+    raw_sample_ch = channel.fromPath(params.samplesheet)
+                       .splitCsv(header: true)
+                       .map { row ->
+                           def r1 = file("${params.data_dir}/${row.sample}/${row.sample}_raw_R1.fastq")
+                           def r2 = file("${params.data_dir}/${row.sample}/${row.sample}_raw_R2.fastq")
+                           tuple(row.sample, r1, r2)
+                       }
+
+    editFASTQheaders(raw_sample_ch)
 
     reads_and_contigs = editFASTQheaders.out.amended_reads
                         .join(runDeNovoAssembly.out.contigs)
