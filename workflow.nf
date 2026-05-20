@@ -37,6 +37,11 @@ workflow {
                            tuple(row.sample, r1, r2)
                        }
 
+    if (params.stop_after_contig_alignment) {
+        log.info "Stopping after contig alignments - check results/shiver/contig_alignments"
+        return
+    }
+
     editFASTQheaders(raw_sample_ch)
 
     reads_and_contigs = editFASTQheaders.out.amended_reads

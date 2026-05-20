@@ -4,7 +4,7 @@
 Shiver is a program which uses hybrid reference sequences to perform reference assembly. These hybrid references are constructed from *de novo* assembled contigs which are aligned with a reference alignment; any gaps in the contig alignment are filled with sequence from the most closely related reference sequence in the alignment. The reads are then aligned to the resulting reference sequence. This approach is useful for getting good assemblies for genomes where there is a lot of diversity and even the closest reference can be too divergent to get good alignments (hence the *de novo*). It was designed for use with HIV (described in [this paper](https://doi.org/10.1093/ve/vey007) and implemented by the authors on [this Github](https://github.com/ChrisHIV/shiver)). It also seems to work well for porcine reproductive and respiratory syndrome virus (PRRSV), which is why this nextflow implementation exists. Here we've removed some of the manual steps, and bundled in the *de novo* assembly. This makes things more user friendly and easier to tack onto Your Favourite Bioformatics Pipeline. However, this comes at a cost: **there may be parameters that are set automatically that you should change for your dataset** as the defaults were chosen for our data -- see below for more details.
 
 ## Getting started
-No prior installation is required for Nextflow workflows. 
+No prior installation is required for Nextflow workflows. However, you should have working Nextflow and Singularity installed. The easiest way to do this is by creating a conda environment (i.e. `conda create -n nextflow bioconda:nextflow conda-forge:singularity`) and then using this to run the pipeline (by activating it each time you want to run: `conda activate nextflow`).
 - Usually Nextflow workflows hosted on Github can be run simply by passing a Github path (e.g. `nextflow run mattarnoldbio/Shiver_reference_assembly ...`).
 - This repo is currently private so it is probably safest to clone the repo locally (`git clone mattarnoldbio/Shiver_reference_assembly`) and then run locally (`cd Shiver_reference_assembly; nextflow run workflow.nf`)
 
@@ -22,3 +22,10 @@ Each of these inputs ***must*** be specified which can be done from the commmand
 - Reference alignment to use for aligning contigs and raw reads to (`ref_alignment`)
   - See [`examples/PRRSV_ref_genomes.fasta`](https://github.com/mattarnoldbio/Shiver_reference_assembly/blob/main/examples/PRRSV_ref_genomes.fasta) for an example.
   - This alignment should prioritise alignment quality and capturing the total diversity in the background data. Consult the [Shiver docs](https://github.com/ChrisHIV/shiver/blob/master/docs/ShiverManual.pdf) for more detail.
+
+### Running:
+After filling out the `nextflow.config` as described, we recommend running the first half of the pipeline using `nextflow run workflow.nf --stop_after_contig_alignment true` and then checking the alignments to see if the trimmed or raw alignment is better (for more detail on this, see the final section of the [Shiver docs](https://github.com/ChrisHIV/shiver/blob/master/docs/ShiverManual.pdf)).
+
+Once this is done, and you have decided which aligment to use downstream, you can run the second half of the pipeline. 
+- If you decide to use the trimmed alignment (default behaviour - for this usually looks better): `nextflow run workflow.nf -resume`. If you know you want to do this before you start, you can just run the pipeline start to finish skipping this whole palaver.
+- If you decide the raw alignment looks better: `nextflow run workflow.nf -resume --use_raw_refs true`

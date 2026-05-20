@@ -62,6 +62,7 @@ process runShiverReadsAlign{
     //          - separate blast output from contigs
 
     script:
+    def refs = params.use_raw_refs ? raw_wRefs : cut_wRefs
     """
     shiver_map_reads.sh \\
         ${shiver_init_dir} \\
@@ -69,7 +70,7 @@ process runShiverReadsAlign{
         ${contigs} \\
         ${sample} \\
         ${blast} \\
-        ${cut_wRefs} \\
+        ${refs} \\
         ${r1} \\
         ${r2}
     """
