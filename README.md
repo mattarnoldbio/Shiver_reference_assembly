@@ -5,8 +5,7 @@ Shiver is a program which uses hybrid reference sequences to perform reference a
 
 ## Getting started
 No prior installation is required for Nextflow workflows. However, you should have working Nextflow and Singularity installed. The easiest way to do this is by creating a conda environment (i.e. `conda create -n nextflow bioconda:nextflow conda-forge:singularity`) and then using this to run the pipeline (by activating it each time you want to run: `conda activate nextflow`).
-- Usually Nextflow workflows hosted on Github can be run simply by passing a Github path (e.g. `nextflow run mattarnoldbio/Shiver_reference_assembly ...`).
-- This repo is currently private so it is probably safest to clone the repo locally (`git clone mattarnoldbio/Shiver_reference_assembly`) and then run locally (`cd Shiver_reference_assembly; nextflow run workflow.nf`)
+It is probably easiest to clone the repo (`git clone mattarnoldbio/Shiver_reference_assembly`) and then run locally (`cd Shiver_reference_assembly; nextflow run workflow.nf`) so you can edit config files etc.
 
 ## Usage
 
