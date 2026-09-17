@@ -1,5 +1,6 @@
 process buildShiverConfig{
-    conda 'bioconda::shiver'
+    //conda 'bioconda::shiver'
+    container   "community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248"
 
     input: 
     path shiver_config 
@@ -25,8 +26,8 @@ process buildShiverConfig{
 }
 
 process runShiverContigsAlign{
-    conda 'bioconda::shiver'
-    //container   "docker://community.wave.seqera.io/library/shiver:1.7.3--cd324db821908ee2"
+    //conda 'bioconda::shiver'
+    container   "community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248"
 
     input: 
     tuple val(sample), path(contigs)
