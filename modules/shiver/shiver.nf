@@ -2,6 +2,10 @@ process buildShiverConfig{
     //conda 'bioconda::shiver'
     container   "community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248"
 
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
+    'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
+    'community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248' }"
+
     input: 
     path shiver_config 
     path ref_alignment
