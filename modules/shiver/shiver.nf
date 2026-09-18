@@ -31,7 +31,9 @@ process buildShiverConfig{
 
 process runShiverContigsAlign{
     //conda 'bioconda::shiver'
-    container   "community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
+    'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
+    'community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248' }"
 
     input: 
     tuple val(sample), path(contigs)
@@ -52,8 +54,12 @@ process runShiverContigsAlign{
 }
 
 process runShiverReadsAlign{
-    conda 'bioconda::shiver'
-    
+    //conda 'bioconda::shiver'
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
+    'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
+    'community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248' }"
+
+
     input: 
     tuple val(sample), path(r1), path(r2), path(contigs), path(cut_wRefs), path(raw_wRefs), path(blast)
     path shiver_init_dir
