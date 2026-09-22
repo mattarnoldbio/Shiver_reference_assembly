@@ -35,6 +35,8 @@ process runShiverContigsAlign{
     'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
     'community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248' }"
 
+    errorStrategy 'ignore'
+
     input: 
     tuple val(sample), path(contigs)
     path shiver_init_dir 
