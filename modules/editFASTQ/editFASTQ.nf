@@ -1,4 +1,6 @@
 process editFASTQheaders {
+    tag "$sample"
+    label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     'oras://community.wave.seqera.io/library/coreutils:9.12--34be2b55ff8e6687' :

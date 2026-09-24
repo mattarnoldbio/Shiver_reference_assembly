@@ -30,6 +30,9 @@ process buildShiverConfig{
 }
 
 process runShiverContigsAlign{
+    tag "$sample"
+    label 'process_low'
+
     //conda 'bioconda::shiver'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
     'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
@@ -56,6 +59,9 @@ process runShiverContigsAlign{
 }
 
 process runShiverReadsAlign{
+    tag "$sample"
+    label 'process_low'
+
     //conda 'bioconda::shiver'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
     'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
