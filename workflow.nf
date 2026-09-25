@@ -65,12 +65,15 @@ workflow {
 
 output {
     contigs {
+        mode 'copy'
         path { sample -> "./contigs/${sample[0]}" }
     }
     shiver_contig_alignment {
+        mode 'copy'
         path { sample -> "./shiver/contig_alignments/${sample[0]}" }
     }
     shiver_final_output {
+        mode 'copy'
         path { sample -> "./shiver/final_output/${sample[0]}" }
     }
 }
