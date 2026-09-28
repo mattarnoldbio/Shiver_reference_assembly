@@ -2,6 +2,8 @@
 
 ################################################################################
 
+shiverThreads=4
+
 # Note that for boolean variables, only the exact value "true" (all lower case)
 # will be interpreted as true, anything else is taken to mean false.
 
