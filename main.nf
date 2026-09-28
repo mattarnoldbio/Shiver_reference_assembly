@@ -1,4 +1,3 @@
-include { sayHello }                                                        from './modules.nf'
 include { runDeNovoAssembly }                                               from './modules/deNovo/deNovo.nf'
 include { buildShiverConfig; runShiverContigsAlign; runShiverReadsAlign  }  from './modules/shiver/shiver.nf'
 include { editFASTQheaders }                                                from './modules/editFASTQ/editFASTQ.nf'
