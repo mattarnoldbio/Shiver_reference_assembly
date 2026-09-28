@@ -3,7 +3,7 @@ process buildShiverConfig{
     container   "community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248"
     label 'process_low'
 
-    container 'ghcr.io/youruser/shiver:1.7.0-mt.1@sha256:a0cf5d9d17d286815a798f868a1c43e54ac1572a3fe2c3e1fb9fab5052fb853f'
+    container 'ghcr.io/mattarnoldbio/shiver:1.7.0-mt.1@sha256:a0cf5d9d17d286815a798f868a1c43e54ac1572a3fe2c3e1fb9fab5052fb853f'
 
     input: 
     path shiver_config 
@@ -33,9 +33,7 @@ process runShiverContigsAlign{
     label 'process_low'
 
     //conda 'bioconda::shiver'
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
-    'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
-    'community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248' }"
+    container 'ghcr.io/mattarnoldbio/shiver:1.7.0-mt.1@sha256:a0cf5d9d17d286815a798f868a1c43e54ac1572a3fe2c3e1fb9fab5052fb853f'
 
     errorStrategy 'ignore'
 
@@ -62,10 +60,7 @@ process runShiverReadsAlign{
     label 'process_low'
 
     //conda 'bioconda::shiver'
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ? 
-    'oras://community.wave.seqera.io/library/shiver:1.7.3--de2515f22b38f4d1' :
-    'community.wave.seqera.io/library/shiver:1.7.3--467ff1f7b70c9248' }"
-
+    container 'ghcr.io/mattarnoldbio/shiver:1.7.0-mt.1@sha256:a0cf5d9d17d286815a798f868a1c43e54ac1572a3fe2c3e1fb9fab5052fb853f'
 
     input: 
     tuple val(sample), path(r1), path(r2), path(contigs), path(cut_wRefs), path(raw_wRefs), path(blast)
