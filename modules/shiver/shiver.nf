@@ -35,7 +35,16 @@ process runShiverContigsAlign{
     //conda 'bioconda::shiver'
     container 'ghcr.io/mattarnoldbio/shiver:1.7.0-mt.1@sha256:a0cf5d9d17d286815a798f868a1c43e54ac1572a3fe2c3e1fb9fab5052fb853f'
 
-    errorStrategy 'ignore'
+    errorStrategy {
+        if (task.exitStatus == 3) {
+            log.warn "Shiver contig alignment failed for sample $sample, continuing with next sample. \n Check results/shiver/contig_alignments for details. \n This sample will be excluded from downstream analysis."
+            return 'ignore'
+        }
+        if (task.exitStatus in 137..140) {
+            return task.attempt <= 2 ? 'retry' : 'error'
+        }
+        return 'error'
+    }
 
     input: 
     tuple val(sample), path(contigs)
@@ -63,7 +72,7 @@ process runShiverReadsAlign{
     container 'ghcr.io/mattarnoldbio/shiver:1.7.0-mt.1@sha256:a0cf5d9d17d286815a798f868a1c43e54ac1572a3fe2c3e1fb9fab5052fb853f'
 
     input: 
-    tuple val(sample), path(r1), path(r2), path(contigs), path(cut_wRefs), path(raw_wRefs), path(blast)
+    tuple val(sample), path(r1), path(r2), path(contigs), path(raw_wRefs), path(cut_wRefs),  path(blast)
     path shiver_init_dir
 
     output:
