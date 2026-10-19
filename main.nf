@@ -1,4 +1,5 @@
-include { runDeNovoAssembly }                                               from './modules/deNovo/deNovo.nf'
+include { runSpadesAssembly }                                               from './modules/deNovo/Spades.nf'
+include { runMegahitAssembly }                                              from './modules/deNovo/Megahit.nf'
 include { buildShiverConfig; runShiverContigsAlign; runShiverReadsAlign  }  from './modules/shiver/shiver.nf'
 include { editFASTQheaders }                                                from './modules/editFASTQ/editFASTQ.nf'
 
@@ -21,7 +22,14 @@ workflow {
                        }
                        // .view()
 
-    runDeNovoAssembly(preprocessed_sample_ch)
+    if (params.assembler == 'megahit') {
+        runDeNovoAssembly = runMegahitAssembly(preprocessed_sample_ch)
+    } else if (params.assembler == 'spades') {
+        runDeNovoAssembly = runSpadesAssembly(preprocessed_sample_ch)
+    } else {
+        log.error "Invalid assembly tool specified: ${params.assembler}. Please choose either 'megahit' or 'spades'."
+        System.exit(1)
+    }
 
     runShiverContigsAlign(
         runDeNovoAssembly.out.contigs, 
