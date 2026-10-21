@@ -1,6 +1,6 @@
 // oras://community.wave.seqera.io/library/megahit:1.2.9--8488ea3ad736bcd8
 
-process runDeNovoAssembly{
+process runMegahitAssembly{
     tag "$sample"
     label 'process_high'
 

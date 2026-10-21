@@ -1,4 +1,5 @@
-include { runDeNovoAssembly }                                               from './modules/deNovo/deNovo.nf'
+include { runSpadesAssembly }                                               from './modules/deNovo/Spades.nf'
+include { runMegahitAssembly }                                              from './modules/deNovo/Megahit.nf'
 include { buildShiverConfig; runShiverContigsAlign; runShiverReadsAlign  }  from './modules/shiver/shiver.nf'
 include { editFASTQheaders }                                                from './modules/editFASTQ/editFASTQ.nf'
 
@@ -21,10 +22,17 @@ workflow {
                        }
                        // .view()
 
-    runDeNovoAssembly(preprocessed_sample_ch)
+    if (params.assembler == 'megahit') {
+        runDeNovoAssembly = runMegahitAssembly(preprocessed_sample_ch)
+    } else if (params.assembler == 'spades') {
+        runDeNovoAssembly = runSpadesAssembly(preprocessed_sample_ch)
+    } else {
+        log.error "Invalid assembly tool specified: ${params.assembler}. Please choose either 'megahit' or 'spades'."
+        System.exit(1)
+    }
 
     runShiverContigsAlign(
-        runDeNovoAssembly.out.contigs, 
+        runDeNovoAssembly.contigs, 
         buildShiverConfig.out.shiver_init_dir
         )
 
@@ -40,7 +48,7 @@ workflow {
         editFASTQheaders(raw_sample_ch)
 
         reads_and_contigs = editFASTQheaders.out.amended_reads
-                            .join(runDeNovoAssembly.out.contigs)
+                            .join(runDeNovoAssembly.contigs)
                             .join(runShiverContigsAlign.out.shiver_contig_alignment)
                             // .view()
 
@@ -54,7 +62,7 @@ workflow {
 
 
     publish:
-    contigs                 = runDeNovoAssembly.out.contigs
+    contigs                 = runDeNovoAssembly.contigs
     shiver_contig_alignment = runShiverContigsAlign.out.shiver_contig_alignment
     shiver_final_output     = params.stop_after_contig_alignment 
                                 ? channel.empty() 
