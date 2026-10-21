@@ -49,7 +49,7 @@ workflow {
 
         reads_and_contigs = editFASTQheaders.out.amended_reads
                             .join(runDeNovoAssembly.contigs)
-                            .join(runShiverContigsAlign.shiver_contig_alignment)
+                            .join(runShiverContigsAlign.out.shiver_contig_alignment)
                             // .view()
 
         runShiverReadsAlign(
@@ -63,7 +63,7 @@ workflow {
 
     publish:
     contigs                 = runDeNovoAssembly.contigs
-    shiver_contig_alignment = runShiverContigsAlign.shiver_contig_alignment
+    shiver_contig_alignment = runShiverContigsAlign.out.shiver_contig_alignment
     shiver_final_output     = params.stop_after_contig_alignment 
                                 ? channel.empty() 
                                 : runShiverReadsAlign.out.shiver_reads_alignment

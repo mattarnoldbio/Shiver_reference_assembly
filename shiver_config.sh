@@ -54,7 +54,7 @@ MinContigLength=300
 # A contig will be split/cut if it has multiple blast hits. After alignment to
 # a set of references, it may be split again if it contains a large gap: this
 # parameter sets the gap size that will result in such a splitting...
-MinGapSizeToSplitGontig=160
+MinGapSizeToSplitGontig=300
 # ...and as such splitting occasionally results in cutting off a small bit of
 # a contig into a new separate contig that you might not want to bother keeping,
 # we have a second length threshold (which you could set to equal the
