@@ -2,9 +2,7 @@ process editFASTQheaders {
     tag "$sample"
     label 'process_single'
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    'oras://community.wave.seqera.io/library/coreutils:9.12--34be2b55ff8e6687' :
-    'community.wave.seqera.io/library/coreutils:9.12--83081953909e2904' }"
+    container 'community.wave.seqera.io/library/picard_shiver:c2e2da40c7f510d6'
 
     input: 
     tuple val(sample), path(r1), path(r2)

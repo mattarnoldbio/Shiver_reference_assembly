@@ -213,13 +213,13 @@ MinBaseFrac=-1
 # the reads due to true biological variation as well sequencing error. We
 # suggest you use this only if you understand duplication in your sequencing
 # data... 
-deduplicate=false
+deduplicate=true
 # Desired command (note that MarkDuplicatesWithMateCigar exists, which may be
 # better, however it still seems to have beta status; also note that you can
 # include options in this command, such as a non-default
 # DUPLICATE_SCORING_STRATEGY, but do not include options relating to file-naming
 # or the associated shiver commands will break):
-DeduplicationCommand="picard MarkDuplicates"
+DeduplicationCommand="bash picard_add_rg_mark_duplicates.sh"
 
 # Shall we remap to the consensus? (For remapping, gaps in coverage in the 
 # consensus will filled in by the corresponding part of the orginal reference,
