@@ -7,29 +7,29 @@ include { BCFTOOLS_MPILEUP }                                                from
 include { BCFTOOLS_QUERY }                                                  from './modules/nf-core/bcftools/query/main.nf'
 include { calculateSummaryStats }                                           from './modules/summaryStats/main.nf'
 
+def resolveReadFile(sample, readSet, mate) {
+    def basename = "${sample}${readSet}_${mate}.fastq"
+    def pattern = "${params.data_dir}/${sample}/${basename}*"
+    def matches = file(pattern, glob: true, checkIfExists: false)
+    if (!(matches instanceof List)) {
+        matches = [matches]
+    }
+    matches = matches.findAll { candidate ->
+        candidate.toFile().isFile() && (candidate.name == basename || candidate.name == "${basename}.gz")
+    }
+
+    if (matches.size() != 1) {
+        throw new IllegalStateException(
+            "Expected exactly one of ${basename} or ${basename}.gz for sample ${sample}; found ${matches.size()}"
+        )
+    }
+
+    matches[0]
+}
+
 workflow {
 
     main:
-
-    def resolveReadFile = { sample, readSet, mate ->
-        def basename = "${sample}${readSet}_${mate}.fastq"
-        def pattern = "${params.data_dir}/${sample}/${basename}*"
-        def matches = file(pattern, glob: true, checkIfExists: false)
-        if (!(matches instanceof List)) {
-            matches = [matches]
-        }
-        matches = matches.findAll { candidate ->
-            candidate.toFile().isFile() && (candidate.name == basename || candidate.name == "${basename}.gz")
-        }
-
-        if (matches.size() != 1) {
-            throw new IllegalStateException(
-                "Expected exactly one of ${basename} or ${basename}.gz for sample ${sample}; found ${matches.size()}"
-            )
-        }
-
-        matches[0]
-    }
 
     buildShiverConfig(
         file(params.shiver_config),
